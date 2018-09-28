@@ -1,6 +1,5 @@
 #!/bin/bash
 
-#set -x
 set -xeuo pipefail
 
 if [[ $(id -u) -ne 0 ]] ; then
@@ -72,8 +71,6 @@ reboot_nodes()
 {
 	beegfs-ctl --listnodes --nodetype=meta | awk '{print $1}' > nodelist
 	beegfs-ctl --listnodes --nodetype=storage | awk '{print $1}' >> nodelist
-	
-	#sort nodelist | uniq >uniquenodelist
 
 	NODES=($(sort nodelist | uniq))
 	NODES=("${NODES[@]%%:*}")
