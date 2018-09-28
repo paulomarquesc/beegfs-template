@@ -79,6 +79,13 @@
       "metadata": {
         "description": "Hpc Group ID."
       }
+    },
+    "installBeeGfsStorageScriptURL":{
+      "type": "string",
+      "defaultValue": "https://raw.githubusercontent.com/paulomarquesc/beegfs-template/master/scripts",
+      "metadata": {
+        "description": "BeeGFS Storage Script public download URL"
+      }
     }
   },
   "variables": {
@@ -197,7 +204,7 @@
                   "autoUpgradeMinorVersion": true,
                   "settings": {
                     "fileUris": [
-                      "[concat(parameters('_artifactsLocation'), '/scripts/install_beegfs_storage.sh',parameters('_artifactsLocationSasToken'))]"
+                      "[concat(parameters('installBeeGfsStorageScriptURL'), '/install_beegfs_storage.sh')]"
                     ],
                     "commandToExecute": "[concat('bash install_beegfs_storage.sh ', variables('installParams'))]"
                   }

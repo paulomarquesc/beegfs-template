@@ -73,6 +73,9 @@
     },
     "deployHaConfiguration":{
       "value": "yes"
+    },
+    "installBeeGfsStorageScriptURL":{
+      "value": "https://raw.githubusercontent.com/paulomarquesc/beegfs-template/master/scripts"
     }
   }
 }
