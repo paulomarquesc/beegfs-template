@@ -1,0 +1,60 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "eastus"
+    },
+    "dnsDomainName":{
+      "value":""
+    },
+    "beeGfsMasterVmName": {
+      "value": "beegfsmaster"     
+    },
+    "VMSize": {      
+      "value": "Standard_DS4_v2"      
+    },
+    "VMImage": {      
+      "value": "CentOS_7.5"      
+    },
+    "vnetName": {
+      "value": "beegfs-vnet"     
+    },
+    "subnetName": {
+      "value": "beegfs-subnet"     
+    },
+    "addressPrefix": {
+      "value": "192.168.0.0/16"
+    },
+    "subnetPrefix": {
+      "value": "192.168.0.0/24"      
+    },
+    "beeGfsMasterIpAddress":{
+      "value":"192.168.0.4"
+    },
+    "adminUsername": {
+      "value": ""      
+    },
+    "sshKeyData": {
+      "value": ""      
+    },
+    "beegfsShareName": {
+      "value": "192.168.0.4"
+    },
+    "beegfsHpcUserHomeFolder": {
+      "value": "/mnt/beegfshome"
+    },
+    "hpcUser": {
+      "value": "hpcuser"
+    },
+    "hpcUid": {
+      "value": 7007
+    },
+    "hpcGroup": {
+      "value": "hpcgroup"
+    },
+    "hpcGid": {
+      "value": 7007
+    }
+  }
+}

@@ -1,0 +1,470 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access _artifactsLocation"
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Location where the resources of this template will be deployed to"
+      },
+      "defaultValue": "eastus"
+    },
+    "vnetRG": {
+      "type": "string",
+      "metadata": {
+        "description": "Resoure group name where the virtual network is located."
+      }
+    },
+    "vnetName": {
+      "type": "string",
+      "defaultValue": "beegfs-vnet",
+      "metadata": {
+        "description": "Name of the the Virtual Network where the subnet will be added"
+      }
+    },
+    "subnetName": {
+      "type": "string",
+      "defaultValue": "beegfs-subnet",
+      "metadata": {
+        "description": "Existing subnet name"
+      }
+    },
+    "subnetIpAddressSuffix": {
+      "type": "string",
+      "defaultValue": "192.168.0",
+      "metadata": {
+        "description": "Clients will have static Ip addresses, this is the network part of a class C subnet."
+      }
+    },
+    "startIpAddress": {
+      "type": "int",
+      "defaultValue": 50,
+      "metadata": {
+        "description": "Clients will have static Ip addresses, this is the start number of the host part of the class C ip address."
+      }
+    },
+    "nodeCount": {
+      "type": "int",
+      "metadata": {
+        "description": "Number of client nodes (100 or less)."
+      },
+      "defaultValue": 1,
+      "minValue": 1,
+      "maxValue": 100
+    },
+    "vmNameSuffix": {
+      "type": "string",
+      "defaultValue":"beegfsclt",
+      "metadata": {
+        "description": "VM name suffix."
+      }
+    },
+    "VMSize": {
+      "type": "string",
+      "defaultValue": "Standard_DS3_v2",
+      "metadata": {
+        "description": "sku to use for the storage nodes - only premium disks VMs are allowed"
+      }
+    },
+    "VMImage": {
+      "type": "string",
+      "defaultValue": "CentOS_7.5",
+      "allowedValues": [
+        "CentOS_7.5"
+      ],
+      "metadata": {
+        "description": "VM Image."
+      }
+    },
+    "dnsDomainName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "DNS domain name use to build the host's FQDN."
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of admin account of the VMs, this name cannot be well know names, like root, admin, administrator, guest, etc."
+      }
+    },
+    "sshKeyData": {
+      "type": "string",
+      "metadata": {
+        "description": "SSH rsa public key file as a string."
+      }
+    },
+    "nodeType": {
+      "type": "string",
+      "defaultValue": "client",
+      "allowedValues": [
+        "client"
+      ],
+      "metadata": {
+        "description": "type of beegfs node to deploy"
+      }
+    },
+    "masterName": {
+      "type": "string",
+      "defaultValue": "beegfsmaster",
+      "metadata": {
+        "description": "Name of master VM name"
+      }
+    },
+    "sambaWorkgroupName": {
+      "type": "string",
+      "defaultValue": "WORKGROUP",
+      "metadata": {
+        "description": "Name of samba workgroup"
+      }
+    },
+    "beeGfsMountPoint": {
+      "type": "string",
+      "defaultValue": "/beegfs",
+      "metadata": {
+        "description": "Shared BeeGFS data mount point, Smb Share (beeGfsSmbShareName) will be a subfolder under this mount point."
+      }
+    },
+    "beeGfsSmbShareName": {
+      "type": "string",
+      "defaultValue": "beegfsshare",
+      "metadata": {
+        "description": "Samba share name. It will be a subfolder as well under beeGfsMountPoint."
+      }
+    },
+    "beegfsHpcUserHomeFolder": {
+      "type": "string",
+      "defaultValue": "/mnt/beegfshome",
+      "metadata": {
+        "description": "This indicates beegfs mount point on master and storage+meta nodes for the hpcuser home folder, mounted on all nodes."
+      }
+    },
+    "hpcUser": {
+      "type": "string",
+      "defaultValue": "hpcuser",
+      "metadata": {
+        "description": "Hpc user that will be owner of all files in the hpc folder structure."
+      }
+    },
+    "hpcUid": {
+      "type": "int",
+      "defaultValue": 7007,
+      "metadata": {
+        "description": "Hpc User ID."
+      }
+    },
+    "hpcGroup": {
+      "type": "string",
+      "defaultValue": "hpcgroup",
+      "metadata": {
+        "description": "Hpc Group."
+      }
+    },
+    "hpcGid": {
+      "type": "int",
+      "defaultValue": 7007,
+      "metadata": {
+        "description": "Hpc Group ID."
+      }
+    },
+    "smbVip":{
+      "type": "string",
+      "defaultValue":"192.168.0.55",
+      "metadata": {
+        "description": "SMB Clients Virtual Ip Address."
+      }
+    }
+  },
+  "variables": {
+    "deploymentConfig": {
+      "apiVersions": {
+        "nicApiVersion": "2017-06-01",
+        "deploymentApiVersion": "2017-05-10",
+        "vmApiVersion": "2017-03-30",
+        "publicIpApiVersion": "2017-11-01",
+        "vnetApiVersion": "2016-03-30",
+        "nsgApiVersion": "2017-06-01",
+        "vmExtensionApiVersion": "2015-06-15",
+        "subnetApiVersion": "2017-10-01",
+        "applicationGwApiVersion": "2017-10-01",
+        "availabilitySetApiVersion": "2017-03-30",
+        "loadBalancerApiVersion":"2018-02-01"
+      }
+    },
+    "computeNodeImages": {
+      "CentOS_7.5": {
+        "publisher": "OpenLogic",
+        "offer": "CentOS",
+        "sku": "7.5",
+        "version": "latest"
+      }
+    },
+    "beeGFSNodeSettings": {
+      "MasterName": "[parameters('masterName')]",
+      "nodeType": "[parameters('nodeType')]",
+      "customDomain": "[parameters('dnsDomainName')]"
+    },
+    "beegfsNodesVMsList": {
+      "copy": [
+        {
+          "name": "items",
+          "count": "[parameters('nodeCount')]",
+          "input": {
+            "name": "[concat(parameters('vmNameSuffix'),'-',copyIndex('items',1))]",
+            "storageAccountType": "Premium_LRS",
+            "osDiskSizeGB": 128,
+            "nicName": "[concat(parameters('vmNameSuffix'),'-',copyIndex('items',1),'-NIC')]",
+            "subnetId": "[variables('subnetId')]",
+            "vmSize": "[parameters('VMSize')]",
+            "privateIpAddress": "[concat(parameters('subnetIpAddressSuffix'),'.',add(copyIndex('items',1),parameters('startIpAddress')))]",
+            "availabilitySetId": "[resourceId('Microsoft.Compute/availabilitySets',variables('avSetInfo')[0].availabilitySetName)]",
+            "imageInfo": "[variables('computeNodeImages')[parameters('VMImage')]]"
+          }
+        }
+      ]
+    },
+    "sshKeyPath": "[concat('/home/',parameters('adminUsername'),'/.ssh/authorized_keys')]",
+    "faultDomains": 3,
+    "updateDomains": 5,
+    "managedDisksAligned": "yes",
+    "vnetId": "[resourceId(parameters('vnetRg'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
+    "subnetId": "[concat(variables('vnetId'),'/subnets/', parameters('subnetName'))]",
+    "avSetInfo": [
+      {
+        "managedDisksAligned": "yes",
+        "availabilitySetName": "BeeGFS-Clients-AvSet"
+      }
+    ],
+    "installParams": "[concat(variables('beeGFSNodeSettings').MasterName,' ', variables('beeGFSNodeSettings').nodeType, ' ', parameters('nodeCount'), ' ', parameters('sambaWorkgroupName'), ' ', parameters('beeGfsMountPoint'), ' ', parameters('beeGfsSmbShareName'), ' ', parameters('beegfsHpcUserHomeFolder'), ' ',  parameters('hpcUser'), ' ',  parameters('hpcUid'), ' ',  parameters('hpcGroup'),' ',  parameters('hpcGid'), ' ', parameters('dnsDomainName') )]",
+    "lbName":"beegfs-smb-lb",
+    "lbId":"[resourceid('Microsoft.Network/loadBalancers',variables('lbName'))]",
+    "lbFeIpConfigName":"LoadBalancerFrontEnd",
+    "lbFeIpConfigId":"[concat(variables('lbId'),'/frontendIPConfigurations/',variables('lbFeIpConfigName'))]",
+    "lbRuleName":"smb-lb-rule",
+    "bePoolName":"bePool01",
+    "bePoolId":"[concat(variables('lbId'),'/backendAddressPools/',variables('bePoolName'))]",
+    "probeName":"smb-port-probe",
+    "probeId":"[concat(variables('lbId'),'/probes/',variables('probeName'))]"
+
+  },
+  "resources": [
+    {
+      "condition": true,
+      "type": "Microsoft.Compute/availabilitySets",
+      "name": "[variables('avSetInfo')[copyIndex()].availabilitySetName]",
+      "apiVersion": "[variables('deploymentConfig').apiVersions.availabilitySetApiVersion]",
+      "location": "[parameters('location')]",
+      "copy": {
+        "name": "avSetCopy",
+        "count": "[length(variables('avSetInfo'))]"
+      },
+      "properties": {
+        "platformFaultDomainCount": "[variables('faultDomains')]",
+        "platformUpdateDomainCount": "[variables('updateDomains')]"
+      },
+      "sku": {
+        "name": "[if(equals(variables('managedDisksAligned'),'yes'),'Aligned','Classic')]"
+      }
+    },
+    {
+      "condition": true,
+      "type": "Microsoft.Network/loadBalancers",
+      "name": "[variables('lbName')]",
+      "apiVersion": "[variables('deploymentConfig').apiVersions.loadBalancerApiVersion]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "[variables('lbFeIpConfigName')]",
+            "properties": {
+              "privateIPAddress": "[parameters('smbVip')]",
+              "privateIPAllocationMethod": "Static",
+              "subnet": {
+                "id": "[variables('beegfsNodesVMsList').items[0].subnetId]"
+              }
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "[variables('bePoolName')]"
+          }
+        ],
+        "loadBalancingRules": [
+          {
+            "name": "[variables('lbRuleName')]",
+            "properties": {
+              "frontendIPConfiguration": {
+                "id": "[variables('lbFeIpConfigId')]"
+              },
+              "frontendPort": 445,
+              "backendPort": 445,
+              "enableFloatingIP": false,
+              "protocol": "Tcp",
+              "loadDistribution": "SourceIP",
+              "backendAddressPool": {
+                "id": "[variables('bePoolId')]"
+              },
+              "probe": {
+                "id": "[variables('probeId')]"
+              }
+            }
+          }
+        ],
+        "probes": [
+          {
+            "name": "[variables('probeName')]",
+            "properties": {
+              "protocol": "Tcp",
+              "port": 445,
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2
+            }
+          }
+        ]
+      },
+      "sku": {
+        "name": "Basic",
+        "tier": "Regional"
+      }
+    },
+    {
+      "condition": true,
+      "comments": "Network Interfaces",
+      "name": "[variables('beegfsNodesVMsList').items[copyIndex()].nicName]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[parameters('location')]",
+      "apiVersion": "[variables('deploymentConfig').apiVersions.nicApiVersion]",
+      "dependsOn": [
+        "[variables('lbName')]"
+      ],
+      "copy": {
+        "name": "nicCopy",
+        "count": "[parameters('nodeCount')]"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[variables('beegfsNodesVMsList').items[copyIndex()].privateIpAddress]",
+              "subnet": {
+                "id": "[variables('beegfsNodesVMsList').items[copyIndex()].subnetId]"
+              },
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[variables('bePoolId')]"
+                }
+              ]
+            }
+          }
+        ],
+        "enableAcceleratedNetworking": true,
+        "primary": true
+      }
+    },
+    {
+      "condition": true,
+      "comments": "Deploying virtual machines",
+      "apiVersion": "[variables('deploymentConfig').apiVersions.vmApiVersion]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('beegfsNodesVMsList').items[copyIndex()].name]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "nicCopy",
+        "avSetCopy"
+      ],
+      "copy": {
+        "name": "vmCopy",
+        "count": "[parameters('nodeCount')]"
+      },
+      "properties": {
+        "availabilitySet": {
+          "id": "[variables('beegfsNodesVMsList').items[copyIndex()].availabilitySetId]"
+        },
+        "hardwareProfile": {
+          "vmSize": "[variables('beegfsNodesVMsList').items[copyIndex()].vmSize]"
+        },
+        "osProfile": {
+          "computerName": "[concat(variables('beegfsNodesVMsList').items[copyIndex()].name,'.',parameters('dnsDomainName'))]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "[variables('sshKeyPath')]",
+                  "keyData": "[parameters('sshKeyData')]"
+                }
+              ]
+            }
+          }
+        },
+        "storageProfile": {
+          "imageReference": "[variables('beegfsNodesVMsList').items[copyIndex()].imageInfo]",
+          "osDisk": {
+            "name": "[concat(variables('beegfsNodesVMsList').items[copyIndex()].name,'-osdisk')]",
+            "caching": "ReadWrite",
+            "createOption": "FromImage",
+            "managedDisk": {
+              "storageAccountType": "[variables('beegfsNodesVMsList').items[copyIndex()].storageAccountType]"
+            },
+            "diskSizeGB": "[variables('beegfsNodesVMsList').items[copyIndex()].osDiskSizeGB]"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('beegfsNodesVMsList').items[copyIndex()].nicName)]",
+              "properties": {
+                "primary": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "condition": true,
+      "comments": "CustomScript extension execution to setup BeeGFS client and SAMBA",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('beegfsNodesVMsList').items[copyIndex()].name,'/CustomScript')]",
+      "apiVersion": "[variables('deploymentConfig').apiVersions.vmExtensionApiVersion]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "vmCopy"
+      ],
+      "copy": {
+        "name": "vmCustomScript",
+        "count": "[parameters('nodeCount')]"
+      },
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.0",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "[concat(parameters('_artifactsLocation'), '/scripts/install_beegfs_client.sh', parameters('_artifactsLocationSasToken'))]"
+          ],
+          "commandToExecute": "[concat('bash install_beegfs_client.sh ', variables('installParams'))]"
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}

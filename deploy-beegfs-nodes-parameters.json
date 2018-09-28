@@ -1,0 +1,78 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "dnsDomainName": {
+      "value": ""
+    },
+    "vmssName": {
+      "value": "beegfsserver"   
+    },
+    "nodeType": {
+      "value": "both"
+    },
+    "nodeCount": {
+      "value": 4
+    },
+    "VMSize": {
+      "value": "Standard_D32s_v3"
+    },
+    "VMImage": {      
+      "value": "CentOS_7.5" 
+    },
+    "vnetRg": {
+      "value": "beegfs-rg-eus"      
+    },
+    "vnetName": {
+      "value": "beegfs-vnet"     
+    },
+    "subnetName": {
+      "value": "beegfs-subnet"
+    },
+    "adminUsername": {
+      "value": ""      
+    },
+    "sshKeyData": {
+      "value": ""      
+    },
+    "storageDiskSize": {
+      "value": "P30"
+    },
+    "StorageDisksCount": {
+      "value": 5      
+    },
+    "metaDiskSize": {     
+      "value": "P20"
+    },
+    "MetaDisksCount": {
+      "value": 2
+    },
+    "volumeType": {
+      "value": "RAID0"     
+    },
+    "masterName": {
+      "value": "beegfsmaster"     
+    },
+    "beeGfsMountPoint":{
+      "value":"/beegfs"
+    },
+    "beegfsHpcUserHomeFolder": {
+      "value": "/mnt/beegfshome"
+    },
+    "hpcUser": {
+      "value": "hpcuser"
+    },
+    "hpcUid": {
+      "value": 7007
+    },
+    "hpcGroup": {
+      "value": "hpcgroup"
+    },
+    "hpcGid": {
+      "value": 7007
+    },
+    "deployHaConfiguration":{
+      "value": "yes"
+    }
+  }
+}

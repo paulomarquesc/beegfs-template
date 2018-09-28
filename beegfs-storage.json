@@ -1,0 +1,212 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access _artifactsLocation"
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Location where the resources of this template will be deployed to"
+      },
+      "defaultValue": "westus2"
+    },
+    "vmssName": {
+      "type": "string"
+    },
+    "vmsscount": {
+      "type": "int"
+    },
+    "vmcount": {
+      "type": "int"
+    },
+    "beeGFSNodeSettings": {
+      "type": "object"
+    },
+    "nodeOSSettings": {
+      "type": "object"
+    },
+    "dnsDomainName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "DNS domain name use to build the host's FQDN."
+      }
+    },
+    "beeGfsMountPoint":{
+      "type":"string",
+      "defaultValue": "/beegfs",
+      "metadata": {
+        "description": "Shared BeeGFS data mount point, Smb Share (beeGfsSmbShareName) will be a subfolder under this mount point."
+      }
+    },
+    "beegfsHpcUserHomeFolder": {
+      "type": "string",
+      "metadata": {
+        "description": "This indicates beegfs mount point on master and storage+meta nodes for the hpcuser home folder, mounted on all nodes."
+      }
+    },
+    "hpcUser": {
+      "type": "string",
+      "metadata": {
+        "description": "Hpc user that will be owner of all files in the hpc folder structure."
+      }
+    },
+    "hpcUid": {
+      "type": "int",
+      "metadata": {
+        "description": "Hpc User ID."
+      }
+    },
+    "hpcGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "Hpc Group."
+      }
+    },
+    "hpcGid": {
+      "type": "int",
+      "metadata": {
+        "description": "Hpc Group ID."
+      }
+    }
+  },
+  "variables": {
+    "computeApiVersion": "2017-03-30",
+    "location": "[parameters('location')]",
+    "beeGFSNodeSettings": "[parameters('beeGFSNodeSettings')]",
+    "nodeOSSettings": "[parameters('nodeOSSettings')]",
+    "sshKeyPath": "[concat('/home/',variables('nodeOSSettings').adminUsername,'/.ssh/authorized_keys')]",
+    "virtualNetworkName": "[variables('beeGFSNodeSettings').vnetName]",
+    "subnetName": "[variables('beeGFSNodeSettings').subnetName]",
+    "nicName": "[concat(parameters('vmssName'), 'nic')]",
+    "ipConfigName": "[concat(parameters('vmssName'), 'ipconfig')]",
+    "installParams": "[concat(variables('beeGFSNodeSettings').MasterName,' ', variables('beeGFSNodeSettings').nodeType,' ', variables('beeGFSNodeSettings').RAIDLevel, ' ', ' ', parameters('beeGfsMountPoint'), ' ', parameters('beegfsHpcUserHomeFolder'), ' ',  parameters('hpcUser'), ' ',  parameters('hpcUid'), ' ',  parameters('hpcGroup'),' ',  parameters('hpcGid'), ' ', parameters('dnsDomainName'))]",
+    "metadataDiskArray": {
+      "copy": [
+        {
+          "name": "items",
+          "count": "[variables('beeGFSNodeSettings').numMetadataDisks]",
+          "input": {
+            "diskSizeGB": "[variables('beeGFSNodeSettings').metadataDiskSize]",
+            "lun": "[copyIndex('items')]",
+            "createOption": "Empty"
+          }
+        }
+      ]
+    },
+    "storageDiskArray": {
+      "copy": [
+        {
+          "name": "items",
+          "count": "[variables('beeGFSNodeSettings').numStorageDisks]",
+          "input": {
+            "diskSizeGB": "[variables('beeGFSNodeSettings').storageDiskSize]",
+            "lun": "[add(variables('beeGFSNodeSettings').numMetadataDisks, copyIndex('items'))]",
+            "createOption": "Empty"
+          }
+        }
+      ]
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Compute/virtualMachineScaleSets",
+      "name": "[concat(parameters('vmssName'),copyIndex())]",
+      "apiVersion": "[variables('computeApiVersion')]",
+      "location": "[variables('location')]",
+      "sku": {
+        "name": "[variables('beeGFSNodeSettings').VMsku]",
+        "tier": "Standard",
+        "capacity": "[parameters('vmcount')]"
+      },
+      "copy": {
+        "name": "[parameters('vmssName')]",
+        "count": "[parameters('vmsscount')]"
+      },
+      "properties": {
+        "overprovision": false,
+        "upgradePolicy": {
+          "mode": "Manual"
+        },
+        "virtualMachineProfile": {
+          "storageProfile": {
+            "osDisk": {
+              "createOption": "FromImage",
+              "managedDisk": {
+                "storageAccountType": "Premium_LRS"
+              }
+            },
+            "imageReference": "[variables('nodeOSSettings').imageReference]",
+            "dataDisks": "[concat(take(variables('storageDiskArray').items,variables('beeGFSNodeSettings').numStorageDisks), take(variables('metadataDiskArray').items, variables('beeGFSNodeSettings').numMetadataDisks))]"
+          },
+          "osProfile": {
+            "computerNamePrefix": "[parameters('vmssName')]",
+            "adminUsername": "[variables('nodeOSSettings').adminUsername]",
+            "linuxConfiguration": {
+              "disablePasswordAuthentication": true,
+              "ssh": {
+                "publicKeys": [
+                  {
+                    "path": "[variables('sshKeyPath')]",
+                    "keyData": "[variables('nodeOSSettings').sshKeyData]"
+                  }
+                ]
+              }
+            }
+          },
+          "networkProfile": {
+            "networkInterfaceConfigurations": [
+              {
+                "name": "[variables('nicName')]",
+                "properties": {
+                  "primary": true,
+                  "enableAcceleratedNetworking" : true,
+                  "ipConfigurations": [
+                    {
+                      "name": "[variables('ipConfigName')]",
+                      "properties": {
+                        "subnet": {
+                          "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'), '/subnets/', variables('subnetName'))]"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "extensionProfile": {
+            "extensions": [
+              {
+                "name": "[concat('lapextension',copyIndex())]",
+                "properties": {
+                  "publisher": "Microsoft.Azure.Extensions",
+                  "type": "CustomScript",
+                  "typeHandlerVersion": "2.0",
+                  "autoUpgradeMinorVersion": true,
+                  "settings": {
+                    "fileUris": [
+                      "[concat(parameters('_artifactsLocation'), '/scripts/install_beegfs_storage.sh',parameters('_artifactsLocationSasToken'))]"
+                    ],
+                    "commandToExecute": "[concat('bash install_beegfs_storage.sh ', variables('installParams'))]"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

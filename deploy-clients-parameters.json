@@ -1,0 +1,78 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "eastus"
+    },
+    "vnetRG": {
+      "value": "beegfs-rg-eus"
+    },
+    "vnetName": {
+      "value": "beegfs-vnet"
+    },
+    "vmNameSuffix": {
+      "value": "beegfsclt"
+    },
+    "subnetName": {
+      "value": "beegfs-subnet"
+    },
+    "subnetIpAddressSuffix":{
+      "value": "192.168.0" 
+    },
+    "startIpAddress":{
+      "value":50
+    },
+    "nodeType": {
+      "value": "client"
+    },
+    "nodeCount": {
+      "value": 2
+    },
+    "VMSize": {
+      "value": "Standard_D4s_v3"
+    },
+    "VMImage": {
+      "value": "CentOS_7.5"
+    },
+    "adminUsername": {
+      "value": ""
+    },
+    "sshKeyData": {
+      "value": ""
+    },
+    "dnsDomainName": {
+      "value": ""
+    },
+    "smbVip":{
+      "value":"192.168.0.55"
+    },
+    "masterName": {
+      "value": "beegfsmaster"
+    },
+    "sambaWorkgroupName": {
+      "value": "SOFS"
+    },
+    "beeGfsMountPoint":{
+      "value":"/beegfs"
+    },
+    "beeGfsSmbShareName":{
+      "value":"beegfsshare"
+    },
+    "beegfsHpcUserHomeFolder": {
+      "value": "/mnt/beegfshome"
+    },
+    "hpcUser": {
+      "value": "hpcuser"
+    },
+    "hpcUid": {
+      "value": 7007
+    },
+    "hpcGroup": {
+      "value": "hpcgroup"
+    },
+    "hpcGid": {
+      "value": 7007
+    }
+  }
+}
