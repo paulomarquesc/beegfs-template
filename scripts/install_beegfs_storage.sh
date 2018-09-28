@@ -1,6 +1,5 @@
 #!/bin/bash
 
-#set -x
 set -xeuo pipefail
 
 if [[ $(id -u) -ne 0 ]] ; then
@@ -25,7 +24,7 @@ fi
 
 SHARE_HOME="/mnt/beegfshome"
 if [[ ! -z "${5:-}" ]]; then
-	SHARE_SCRATCH="$5"
+	SHARE_HOME="$5"
 fi
 
 HPC_USER=hpcuser
