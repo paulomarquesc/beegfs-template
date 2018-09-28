@@ -93,11 +93,11 @@ restart_beegfs-client()
 	do
 		counter=$((counter+1))
 		echo "   Attempt $counter"  
-		if [[ "$counter" -gt 10 ]]; then
+		if [[ "$counter" -gt 15 ]]; then
 			break
 		fi 
 	    
-		RND_SECONDS=$(( RANDOM % (300 - 30 + 1 ) + 30 ))
+		RND_SECONDS=$(( RANDOM % (120 - 30 + 1 ) + 30 ))
 		echo "Sleeping $RND_SECONDS seconds before retry..."
 		sleep $RND_SECONDS
 	done
