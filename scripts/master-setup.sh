@@ -15,14 +15,14 @@ fi
 USERNAME=$1
 
 # Shares
-SHARE_SCRATCH="/mnt/beegfs"
+SHARE_SCRATCH="/beegfs"
 if [ -n "$2" ]; then
 	SHARE_SCRATCH=$2
 fi
 
 SHARE_HOME="/mnt/beegfshome"
 if [ -n "$3" ]; then
-	SHARE_SCRATCH=$3
+	SHARE_HOME=$3
 fi
 
 # User
@@ -104,7 +104,7 @@ setup_user()
 
 }
 
-mount_nfs()
+setup_nfs()
 {
 	yum -y install nfs-utils nfs-utils-lib
 
@@ -122,7 +122,7 @@ if [ -e "$SETUP_MARKER" ]; then
 fi
 
 setup_folders
-mount_nfs
+setup_nfs
 setup_user
 
 # Create marker file so we know we're configured

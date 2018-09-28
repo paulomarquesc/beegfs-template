@@ -21,7 +21,7 @@ BEEGFS_STORAGE="/data/beegfs/storage"
 BEEGFS_NODE_TYPE="$1"
 
 # Shares
-SHARE_SCRATCH="/mnt/beegfs"
+SHARE_SCRATCH="/beegfs"
 if [[ ! -z "${2:-}" ]]; then
 	SHARE_SCRATCH=$2
 fi

@@ -244,78 +244,6 @@ EOF
 	rm LIScron
 }
 
-install_ha_in_cron()
-{
-	cat >  /root/ha_install.sh << "EOF"
-SHARE_SCRATCH="/beegfs"
-if [ -n "$1" ]; then
-	SHARE_SCRATCH=$1
-fi
-
-echo "using Scratch folder: $SHARE_SCRATCH"
-
-SETUP_MARKER="$SHARE_SCRATCH/install_beegfs_ha.marker"
-echo "Checking for setup marker at $SETUP_MARKER"
-if [ -e "$SETUP_MARKER" ]; then
-    echo "We're already configured, exiting..."
-    exit 0
-fi
-
-touch $SETUP_MARKER
-
-setup_ha()
-{
-	# Setting up Storage mirror group
-	RESULT=$(sudo beegfs-ctl --listmirrorgroups --nodetype=storage)
-	echo $RESULT
-	if [ -z "$RESULT" ]; then
-		echo "Setting up Storage mirror group..."
-
-		sudo beegfs-ctl --addmirrorgroup --automatic --nodetype=storage
-		sleep 20
-
-		# Determining number of targets
-		echo "Determining number of targets..."
-		beegfs-ctl --listtargets --mirrorgroups > targetlist.txt
-
-		NUM_TARGETS=$(expr $(cat targetlist.txt | wc -l) - 2)
-		echo "Number is $NUM_TARGETS"
-		if [ $NUM_TARGETS -gt 0 ]; then
-			echo "Setting pattern...$NUM_TARGETS - $SHARE_SCRATCH"
-			sudo beegfs-ctl --setpattern $SHARE_SCRATCH --numtargets=$NUM_TARGETS --chunksize=512k
-		fi
-	fi
-
-	# Setting up Metadata mirror group
-	RESULT=$(sudo beegfs-ctl --listmirrorgroups --nodetype=meta)
-	echo $RESULT
-	if [ -z "$RESULT" ]; then
-		echo "Setting up Metadata mirror group..."
-		sudo sudo beegfs-ctl --addmirrorgroup --automatic --nodetype=meta
-		sleep 20
-		sudo beegfs-ctl --mirrormd
-	fi
-}
-
-RND_SECONDS=$(( RANDOM % (300 - 30 + 1 ) + 30 ))
-echo "Sleeping $RND_SECONDS seconds before start ha configuration..."
-sleep $RND_SECONDS
-
-setup_ha
-
-touch $SETUP_MARKER
-
-echo "End"
-
-exit 0
-EOF
-	chmod 700 /root/ha_install.sh
-	! crontab -l > ha_cron
-	echo "@reboot /root/ha_install.sh $SHARE_SCRATCH >>/root/ha_log.txt" >> ha_cron
-	crontab ha_cron
-	rm ha_cron
-}
-
 install_samba_in_cron()
 {
 	cat >  /root/samba_install.sh << "EOF"
@@ -403,24 +331,6 @@ directory mask = 777
 
 # Main
 
-# HA_MARKER="$BEEGFS_SHARE/install_beegfs_ha.marker"
-
-# counter=0
-# while (! (find $HA_MARKER))
-# do
-#     echo "Waiting for $HA_MARKER ..."
-# 	counter=$((counter+1))
-# 	if [[ "$counter" -gt 40 ]]; then
-# 		break
-# 	fi 
-#     sleep 10
-# done
-
-# # Random wait before starting cfg
-# RND_SECONDS=$(( RANDOM % (300 - 30 + 1 ) + 30 ))
-# echo "Sleeping $RND_SECONDS seconds before start ha configuration..."
-# sleep $RND_SECONDS
-
 install_samba_pkgs
 configure_samba
 
@@ -428,6 +338,7 @@ sudo touch $SETUP_SAMBA_MARKER
 
 echo "End"
 shutdown -r +1
+
 EOF
 	chmod 700 /root/samba_install.sh
 	! crontab -l > smb_cron
@@ -465,7 +376,6 @@ install_beegfs_repo
 install_beegfs
 download_lis
 install_lis_in_cron $SHARE_SCRATCH
-#install_ha_in_cron
 install_samba_in_cron $SHARE_SCRATCH $BEEGFS_SMB_SHARENAME
 setup_user
 
