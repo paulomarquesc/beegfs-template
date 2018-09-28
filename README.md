@@ -81,6 +81,8 @@ A sample deployment script called Deploy-AzureResourceGroup.sh is provided with 
         ./Deploy-AzureResourceGroup.sh -g beegfs-rg -l eastus -t deploy-clients.json -p deploy-clients-parameters.json -s storageaccountname -r storage-account-rg
         ```
 
+    > Note: inside devtools folder there is a simple script that ties all deployments together, you can copy it to the beegfs-template folder, change its values and execute one script for the whole environment.
+
 ### List of parameters per template and their descriptions
 #### deploy-beegfs-master-parameters.json
 * **_artifactsLocation:** Auto-generated container in staging storage account to receive post-build staging folder upload.
