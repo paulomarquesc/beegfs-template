@@ -147,9 +147,9 @@ echo "Created (if not created) storage account container: $ARTIFACTS_CONTAINER_N
 
 # Set a 4 hour expiry time for a SAS token
 # Note: Set the expiry time to allow enough time to complete the deployment.
-starttime=$(python -c "from datetime import datetime; print format(datetime.utcnow(), '%Y-%m-%dT%H:%MZ')")
+starttime=$(python -c "from datetime import datetime; print('{0:%Y-%m-%dT%H:%MZ}'.format(datetime.utcnow()))")
 echo "Setting an start time to: $starttime"
-expiretime=$(python -c "from datetime import datetime, timedelta; four_hours_from_now = datetime.utcnow() + timedelta(hours=4); print format(four_hours_from_now, '%Y-%m-%dT%H:%MZ')")
+expiretime=$(python -c "from datetime import datetime, timedelta; four_hours_from_now = datetime.utcnow() + timedelta(hours=4); print('{0:%Y-%m-%dT%H:%MZ}'.format(four_hours_from_now))")
 echo "Setting an expire time to: $expiretime"
 
 echo "Creating a SAS token for access to: $ARTIFACTS_CONTAINER_NAME"
