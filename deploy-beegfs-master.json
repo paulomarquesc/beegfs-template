@@ -109,7 +109,7 @@
     },
     "beegfsShareName": {
       "type": "string",
-      "defaultValue": "192.168.0.4",
+      "defaultValue": "/beegfs",
       "metadata": {
         "description": "This indicates beegfs mount point on master and storage+meta nodes."
       }

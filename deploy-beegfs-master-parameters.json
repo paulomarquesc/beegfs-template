@@ -39,7 +39,7 @@
       "value": ""      
     },
     "beegfsShareName": {
-      "value": "192.168.0.4"
+      "value": "/beegfs"
     },
     "beegfsHpcUserHomeFolder": {
       "value": "/mnt/beegfshome"

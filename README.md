@@ -13,7 +13,7 @@ This solution is break down into three components, BeeGFS Master node, BeeGFS St
 1. deploy-beegfs-nodes.json
 1. deploy-clients.json (optional)
 
-A sample deployment script called Deploy-AzureResourceGroup.sh is provided with this solution and you can use it for to help automate your deployment. This is a minimal sample command line example which creates staging storage account to hold all deployment related files:
+A sample deployment script called Deploy-AzureResourceGroup.sh is provided with this solution and you can use it to help automate your deployment. This is a minimal sample command line example which creates staging storage account to hold all deployment related files:
 
 ```bash
 ./Deploy-AzureResourceGroup.sh -g myResourceGroup -l eastus -t deploy-beegfs-master.json -p deploy-beegfs-master-parameters.json -r support-rg
@@ -100,7 +100,7 @@ A sample deployment script called Deploy-AzureResourceGroup.sh is provided with 
 * **beeGfsMasterIpAddress:** BeeGFS Management(master) node Static Ip Address. Default Value: `192.168.0.4`
 * **adminUsername:** Admin username on all VMs.
 * **sshKeyData:** SSH rsa public key file as a string.
-* **beegfsShareName:** This indicates beegfs mount point on master and storage+meta nodes. Default Value: `192.168.0.4`
+* **beegfsShareName:** This indicates beegfs mount point on master and storage+meta nodes. Default Value: `/beegfs`
 * **beegfsHpcUserHomeFolder:** This indicates beegfs mount point on master and storage+meta nodes for the hpcuser home folder, mounted on all nodes. Default Value: `/mnt/beegfshome`
 * **hpcUser:** Hpc user that will be owner of all files in the hpc folder structure. Default Value: `hpcuser`
 * **hpcUid:** Hpc User ID. Default Value: `7007`
