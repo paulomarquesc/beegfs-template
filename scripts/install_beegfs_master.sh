@@ -1,7 +1,6 @@
 #!/bin/bash
 
-set -x
-#set -xeuo pipefail
+set -xeuo pipefail
 
 if [[ $(id -u) -ne 0 ]] ; then
     echo "Must be run as root"
