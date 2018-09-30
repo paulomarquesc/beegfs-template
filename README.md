@@ -114,8 +114,8 @@ A sample deployment script called Deploy-AzureResourceGroup.sh is provided with 
 * **vmssName:** OSS/MDS (Storage/Meta) VMSS name. Default Value: `beegfsserver`
 * **dnsDomainName:** DNS domain name use to build the host's FQDN.
 * **nodeType:** type of beegfs node to deploy. Default Value: `all`
-* **nodeCount:** Number of BeeGFS nodes (100 or less). Default Value: `1`
-* **VMSize:** sku to use for the storage nodes - only premium disks VMs are allowed. Default Value: `Standard_DS3_v2`
+* **nodeCount:** Number of BeeGFS nodes (100 or less). Default Value: `4`
+* **VMSize:** sku to use for the storage nodes - only premium disks VMs are allowed. Default Value: `Standard_D16s_v3`
 * **VMImage:** VM Image. Default Value: `CentOS_7.5`
 * **vnetName:** Vnet name. Default Value: `beegfs-vnet`
 * **subnetName:** Subnet name. Default Value: `beegfs-subnet`
@@ -145,9 +145,9 @@ A sample deployment script called Deploy-AzureResourceGroup.sh is provided with 
 * **subnetName:** Existing subnet name. Default Value: `beegfs-subnet`
 * **subnetIpAddressSuffix:** Clients will have static Ip addresses, this is the network part of a class C subnet. Default Value: `192.168.0`
 * **startIpAddress:** Clients will have static Ip addresses, this is the start number of the host part of the class C ip address. Default Value: `50`
-* **nodeCount:** Number of client nodes (100 or less). Default Value: `1`
+* **nodeCount:** Number of client nodes (100 or less). Default Value: `2`
 * **vmNameSuffix:** VM name suffix. Default Value: `beegfsclt`
-* **VMSize:** sku to use for the storage nodes - only premium disks VMs are allowed. Default Value: `Standard_DS3_v2`
+* **VMSize:** sku to use for the storage nodes - only premium disks VMs are allowed. Default Value: `Standard_D4s_v3`
 * **VMImage:** VM Image. Default Value: `CentOS_7.5`
 * **dnsDomainName:** DNS domain name use to build the host's FQDN.
 * **adminUsername:** Name of admin account of the VMs, this name cannot be well know names, like root, admin, administrator, guest, etc.

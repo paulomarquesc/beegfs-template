@@ -15,7 +15,7 @@
       "value": 4
     },
     "VMSize": {
-      "value": "Standard_D32s_v3"
+      "value": "Standard_D16s_v3"
     },
     "VMImage": {      
       "value": "CentOS_7.5" 
