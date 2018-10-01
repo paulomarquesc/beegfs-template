@@ -8,7 +8,7 @@ if [[ $(id -u) -ne 0 ]] ; then
 fi
 
 if [ $# -lt 2 ]; then
-    echo "Usage: $0 <Mount> <hpcuser>"
+    echo "Usage: $0 <Mount> <hpcuser> <Number of Storage Nodes>"
     exit 1
 fi
 
@@ -22,6 +22,11 @@ fi
 HPC_USER=hpcuser
 if [[ ! -z "${2:-}" ]]; then
 	HPC_USER="$2"
+fi
+
+BEEGFS_NODE_COUNT=4
+if [[ ! -z "${3:-}" ]]; then
+	BEEGFS_NODE_COUNT=$3
 fi
 
 echo "using Scratch folder: $SHARE_SCRATCH"
@@ -100,7 +105,25 @@ restart_beegfs-client()
 	done
 }
 
+wait_for_all_beegfs_nodes()
+{
+	counter=0
+	while [ ! $(beegfs-ctl --listnodes --nodetype=storage | wc -l) -ge $BEEGFS_NODE_COUNT ]
+	do
+		echo "waiting for all nodes come up live..."
+
+		counter=$((counter+1))
+		if [[ "$counter" -gt 60 ]]; then
+			break
+		fi
+
+		sleep 10
+	done
+}
+
+
 restart_beegfs-client
+wait_for_all_beegfs_nodes
 setup_ha
 reboot_nodes
 

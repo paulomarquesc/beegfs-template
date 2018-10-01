@@ -319,7 +319,7 @@
       ]
     },
     "installParams": "[concat(variables('beeGFSNodeSettings').MasterName,' ', variables('beeGFSNodeSettings').nodeType,' ', variables('beeGFSNodeSettings').RAIDLevel, ' ', ' ', parameters('beeGfsMountPoint'), ' ', parameters('beegfsHpcUserHomeFolder'), ' ',  parameters('hpcUser'), ' ',  parameters('hpcUid'), ' ',  parameters('hpcGroup'),' ',  parameters('hpcGid'), ' ', parameters('dnsDomainName'))]",
-    "haInstallParams": "[concat(parameters('beeGfsMountPoint'),' ',parameters('hpcUser')) ]",
+    "haInstallParams": "[concat(parameters('beeGfsMountPoint'),' ',parameters('hpcUser'), ' ', parameters('nodeCount'))]",
     "vmcount": "[parameters('nodeCount')]",
     "subres": "[sub(parameters('nodeCount'), 1)]",
     "divresult": "[div(variables('subres'),variables('vmcount'))]",
