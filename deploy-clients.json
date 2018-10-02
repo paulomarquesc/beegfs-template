@@ -343,7 +343,7 @@
     },
     {
       "condition": true,
-      "comments": "Network Interfaces",
+      "comments": "Initial deployment of NICs - not attached to LB",
       "name": "[variables('beegfsNodesVMsList').items[copyIndex()].nicName]",
       "type": "Microsoft.Network/networkInterfaces",
       "location": "[parameters('location')]",
@@ -364,12 +364,7 @@
               "privateIPAddress": "[variables('beegfsNodesVMsList').items[copyIndex()].privateIpAddress]",
               "subnet": {
                 "id": "[variables('beegfsNodesVMsList').items[copyIndex()].subnetId]"
-              },
-              "loadBalancerBackendAddressPools": [
-                {
-                  "id": "[variables('bePoolId')]"
-                }
-              ]
+              }
             }
           }
         ],
@@ -463,6 +458,42 @@
           ],
           "commandToExecute": "[concat('bash install_beegfs_client.sh ', variables('installParams'))]"
         }
+      }
+    },
+    {
+      "condition": true,
+      "comments": "Final deployment of NICs - attached to LB",
+      "name": "[variables('beegfsNodesVMsList').items[copyIndex()].nicName]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "location": "[parameters('location')]",
+      "apiVersion": "[variables('deploymentConfig').apiVersions.nicApiVersion]",
+      "dependsOn": [
+        "vmCustomScript"
+      ],
+      "copy": {
+        "name": "nicCopy",
+        "count": "[parameters('nodeCount')]"
+      },
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[variables('beegfsNodesVMsList').items[copyIndex()].privateIpAddress]",
+              "subnet": {
+                "id": "[variables('beegfsNodesVMsList').items[copyIndex()].subnetId]"
+              },
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[variables('bePoolId')]"
+                }
+              ]
+            }
+          }
+        ],
+        "enableAcceleratedNetworking": true,
+        "primary": true
       }
     }
   ],

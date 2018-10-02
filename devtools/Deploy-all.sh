@@ -1,3 +1,5 @@
+set -xeuo pipefail
+
 # Deploying management nodes
 ./Deploy-AzureResourceGroup.sh -g beegfs-rg-eus -l eastus -t deploy-beegfs-master.json -p deploy-beegfs-master-parameters.json -s pmcstorage08 -r support-rg
 
