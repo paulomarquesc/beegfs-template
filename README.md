@@ -110,9 +110,11 @@ A sample deployment script called Deploy-AzureResourceGroup.sh is provided with 
 #### deploy-beegfs-nodes-parameters.json
 * **_artifactsLocation:** Auto-generated container in staging storage account to receive post-build staging folder upload.
 * **_artifactsLocationSasToken:** Auto-generated token to access _artifactsLocation.
-* **location:** Location where the resources of this template will be deployed to. Default Value: `westus2`
-* **vmssName:** OSS/MDS (Storage/Meta) VMSS name. Default Value: `beegfsserver`
-* **dnsDomainName:** DNS domain name use to build the host's FQDN.
+* **location:** Location where the resources of this template will be deployed to. Default Value: `eastus`
+* **nodeNameSuffix:** OSS/MDS (Storage/Meta) VMSS name. Default Value: `beegfsserver`
+* **nodeSubnetIpAddressSuffix:** Nodes will have static Ip addresses, this is the network part of a class C subnet.
+* **nodeStartIpAddress:** Nodes will have static Ip addresses, this is the start number of the host part of the class C ip address. Default Value: `20`
+* **dnsDomainName:** DNS domain name use to build the host's FQDN. Default Value: ``
 * **nodeType:** type of beegfs node to deploy. Default Value: `all`
 * **nodeCount:** Number of BeeGFS nodes (100 or less). Default Value: `4`
 * **VMSize:** sku to use for the storage nodes - only premium disks VMs are allowed. Default Value: `Standard_D16s_v3`
@@ -122,9 +124,9 @@ A sample deployment script called Deploy-AzureResourceGroup.sh is provided with 
 * **adminUsername:** Admin username on all VMs.
 * **sshKeyData:** SSH rsa public key file as a string.
 * **storageDiskSize:** Premium storage disk size used for the storage services. Default Value: `P10`
-* **StorageDisksCount:** Number of storage disks. Default Value: `1`
+* **storageDisksCount:** Number of storage disks. Default Value: `1`
 * **metaDiskSize:** Premium storage disk size used for the metadata services. Default Value: `P10`
-* **MetaDisksCount:** Number of metadata disks. Default Value: `1`
+* **metaDisksCount:** Number of metadata disks. Default Value: `1`
 * **volumeType:** Volume for data disks. Default Value: `RAID0`
 * **vnetRg:** Name of the RG of the virtual network which master server is using.
 * **masterName:** Name of master VM name. Default Value: `beegfsmaster`
@@ -149,7 +151,7 @@ A sample deployment script called Deploy-AzureResourceGroup.sh is provided with 
 * **vmNameSuffix:** VM name suffix. Default Value: `beegfsclt`
 * **VMSize:** sku to use for the storage nodes - only premium disks VMs are allowed. Default Value: `Standard_D4s_v3`
 * **VMImage:** VM Image. Default Value: `CentOS_7.5`
-* **dnsDomainName:** DNS domain name use to build the host's FQDN.
+* **dnsDomainName:** DNS domain name use to build the host's FQDN. Default Value: ``
 * **adminUsername:** Name of admin account of the VMs, this name cannot be well know names, like root, admin, administrator, guest, etc.
 * **sshKeyData:** SSH rsa public key file as a string.
 * **nodeType:** type of beegfs node to deploy. Default Value: `client`

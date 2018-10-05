@@ -462,40 +462,55 @@
     },
     {
       "condition": true,
-      "comments": "Final deployment of NICs - attached to LB",
-      "name": "[variables('beegfsNodesVMsList').items[copyIndex()].nicName]",
-      "type": "Microsoft.Network/networkInterfaces",
-      "location": "[parameters('location')]",
-      "apiVersion": "[variables('deploymentConfig').apiVersions.nicApiVersion]",
+      "comments": "Final deployment of NICs - attaching to LB",
+      "name": "attachNicsToLb",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('deploymentConfig').apiVersions.deploymentApiVersion]",
       "dependsOn": [
         "vmCustomScript"
       ],
-      "copy": {
-        "name": "nicCopy",
-        "count": "[parameters('nodeCount')]"
-      },
       "properties": {
-        "ipConfigurations": [
-          {
-            "name": "ipconfig1",
-            "properties": {
-              "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "[variables('beegfsNodesVMsList').items[copyIndex()].privateIpAddress]",
-              "subnet": {
-                "id": "[variables('beegfsNodesVMsList').items[copyIndex()].subnetId]"
-              },
-              "loadBalancerBackendAddressPools": [
-                {
-                  "id": "[variables('bePoolId')]"
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "copy": [
+            {
+              "name": "resources",
+              "count": "[parameters('nodeCount')]",
+              "input": {
+                "type": "Microsoft.Network/networkInterfaces",
+                "name": "[variables('beegfsNodesVMsList').items[copyIndex('resources')].nicName]",
+                "location": "[parameters('location')]",
+                "apiVersion": "[variables('deploymentConfig').apiVersions.nicApiVersion]",
+                "properties": {
+                  "ipConfigurations": [
+                    {
+                      "name": "ipconfig1",
+                      "properties": {
+                        "privateIPAllocationMethod": "Static",
+                        "privateIPAddress": "[variables('beegfsNodesVMsList').items[copyIndex('resources')].privateIpAddress]",
+                        "subnet": {
+                          "id": "[variables('beegfsNodesVMsList').items[copyIndex('resources')].subnetId]"
+                        },
+                        "loadBalancerBackendAddressPools": [
+                          {
+                            "id": "[variables('bePoolId')]"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "enableAcceleratedNetworking": true,
+                  "primary": true
                 }
-              ]
+              }
             }
-          }
-        ],
-        "enableAcceleratedNetworking": true,
-        "primary": true
+          ]
+        }
       }
     }
+
   ],
   "outputs": {}
 }

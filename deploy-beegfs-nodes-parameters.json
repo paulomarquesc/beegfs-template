@@ -2,11 +2,20 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "adminUsername": {
+      "value": ""
+    },
+    "sshKeyData": {
+      "value": ""
+    },
+    "location": {
+      "value": "eastus"
+    },
     "dnsDomainName": {
       "value": ""
     },
-    "vmssName": {
-      "value": "beegfsserver"   
+    "nodeNameSuffix": {
+      "value": "beegfsserver"
     },
     "nodeType": {
       "value": "both"
@@ -14,47 +23,47 @@
     "nodeCount": {
       "value": 4
     },
+    "nodeSubnetIpAddressSuffix":{
+      "value": "192.168.0" 
+    },
+    "nodeStartIpAddress":{
+      "value":10
+    },
     "VMSize": {
       "value": "Standard_D16s_v3"
     },
-    "VMImage": {      
-      "value": "CentOS_7.5" 
+    "VMImage": {
+      "value": "CentOS_7.5"
     },
     "vnetRg": {
-      "value": "beegfs-rg-eus"      
+      "value": "beegfs-rg-eus"
     },
     "vnetName": {
-      "value": "beegfs-vnet"     
+      "value": "beegfs-vnet"
     },
     "subnetName": {
       "value": "beegfs-subnet"
     },
-    "adminUsername": {
-      "value": ""      
-    },
-    "sshKeyData": {
-      "value": ""      
-    },
     "storageDiskSize": {
       "value": "P30"
     },
-    "StorageDisksCount": {
-      "value": 5      
+    "storageDisksCount": {
+      "value": 5
     },
-    "metaDiskSize": {     
+    "metaDiskSize": {
       "value": "P20"
     },
-    "MetaDisksCount": {
+    "metaDisksCount": {
       "value": 2
     },
     "volumeType": {
-      "value": "RAID0"     
+      "value": "RAID0"
     },
     "masterName": {
-      "value": "beegfsmaster"     
+      "value": "beegfsmaster"
     },
-    "beeGfsMountPoint":{
-      "value":"/beegfs"
+    "beeGfsMountPoint": {
+      "value": "/beegfs"
     },
     "beegfsHpcUserHomeFolder": {
       "value": "/mnt/beegfshome"
@@ -71,11 +80,8 @@
     "hpcGid": {
       "value": 7007
     },
-    "deployHaConfiguration":{
+    "deployHaConfiguration": {
       "value": "yes"
-    },
-    "installBeeGfsStorageScriptURL":{
-      "value": "https://raw.githubusercontent.com/paulomarquesc/beegfs-template/master/scripts"
     }
   }
 }

@@ -2,6 +2,12 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "adminUsername": {
+      "value": ""
+    },
+    "sshKeyData": {
+      "value": ""
+    },
     "location": {
       "value": "eastus"
     },
@@ -34,12 +40,6 @@
     },
     "VMImage": {
       "value": "CentOS_7.5"
-    },
-    "adminUsername": {
-      "value": ""
-    },
-    "sshKeyData": {
-      "value": ""
     },
     "dnsDomainName": {
       "value": ""
