@@ -68,6 +68,14 @@ setup_ha()
 		echo "Setting up Metadata mirror group..."
 		sudo sudo beegfs-ctl --addmirrorgroup --automatic --nodetype=meta
 		sleep 20
+		
+		CLIENT_ARR=()
+		CLIENT_ARR+=($(beegfs-ctl --listnodes --nodetype=client | awk -F: '{print $2}' | cut -d ' ' -f 2 | tr -d $']'))
+		for CLIENT_ID in "${CLIENT_ARR[@]}"
+		do
+			beegfs-ctl --removenode ${CLIENT_ID} --nodetype=client
+		done
+
 		sudo beegfs-ctl --mirrormd
 	fi
 }
