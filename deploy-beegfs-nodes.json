@@ -21,11 +21,11 @@
       },
       "defaultValue": "eastus"
     },
-    "nodeNameSuffix": {
+    "nodeNamePrefix": {
       "type": "string",
       "defaultValue": "beegfsserver",
       "metadata": {
-        "description": "OSS/MDS (Storage/Meta) VMSS name."
+        "description": "OSS/MDS (Storage/Meta) VM prefix name."
       },
       "maxLength": 15
     },
@@ -349,7 +349,7 @@
           "name": "items",
           "count": "[parameters('nodeCount')]",
           "input": {
-            "name": "[concat(parameters('nodeNameSuffix'),'-',copyIndex('items',1))]",
+            "name": "[concat(parameters('nodeNamePrefix'),'-',copyIndex('items',1))]",
             "storageAccountType": "Premium_LRS",
             "osDiskSizeGB": 128,
             "subnetId": "[variables('subnetId')]",

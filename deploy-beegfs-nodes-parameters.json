@@ -14,7 +14,7 @@
     "dnsDomainName": {
       "value": ""
     },
-    "nodeNameSuffix": {
+    "nodeNamePrefix": {
       "value": "beegfsserver"
     },
     "nodeType": {
