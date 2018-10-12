@@ -111,7 +111,7 @@ A sample deployment script called Deploy-AzureResourceGroup.sh is provided with 
 * **_artifactsLocation:** Auto-generated container in staging storage account to receive post-build staging folder upload.
 * **_artifactsLocationSasToken:** Auto-generated token to access _artifactsLocation.
 * **location:** Location where the resources of this template will be deployed to. Default Value: `eastus`
-* **nodeNameSuffix:** OSS/MDS (Storage/Meta) VMSS name. Default Value: `beegfsserver`
+* **nodeNamePrefix:** OSS/MDS (Storage/Meta) VM prefix name. Default Value: `beegfsserver`
 * **nodeSubnetIpAddressSuffix:** Nodes will have static Ip addresses, this is the network part of a class C subnet.
 * **nodeStartIpAddress:** Nodes will have static Ip addresses, this is the start number of the host part of the class C ip address. Default Value: `20`
 * **dnsDomainName:** DNS domain name use to build the host's FQDN. Default Value: ``
