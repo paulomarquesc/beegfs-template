@@ -90,7 +90,7 @@ A sample deployment script called Deploy-AzureResourceGroup.sh is provided with 
 * **location:** Location where the resources of this template will be deployed to. Default Value: `eastus`
 * **dnsDomainName:** DNS domain name use to build the host's FQDN. If using this parameter, make sure that there is a DNS server serving the vnet before the BeeGFS servers gets deployed.
 * **beeGfsMasterVmName:** Management (master) BeeGfs VM name. Default Value: `beegfsmaster`
-* **VMSize:** sku to use for the storage nodes - only premium disks VMs are allowed. Default Value: `Standard_DS3_v2`
+* **VMSize:** sku to use for the storage nodes - only premium disks VMs are allowed. Default Value: `Standard_DS4_v2`
 * **VMImage:** VM Image. Default Value: `CentOS_7.5`
 * **vnetRG:** Resoure group name where the virtual network is located. Defaults to deployment Resource Group. Default Value: `none`
 * **vnetName:** Vnet name. Default Value: `beegfs-vnet`
@@ -123,10 +123,10 @@ A sample deployment script called Deploy-AzureResourceGroup.sh is provided with 
 * **subnetName:** Subnet name. Default Value: `beegfs-subnet`
 * **adminUsername:** Admin username on all VMs.
 * **sshKeyData:** SSH rsa public key file as a string.
-* **storageDiskSize:** Premium storage disk size used for the storage services. Default Value: `P10`
-* **storageDisksCount:** Number of storage disks. Default Value: `1`
-* **metaDiskSize:** Premium storage disk size used for the metadata services. Default Value: `P10`
-* **metaDisksCount:** Number of metadata disks. Default Value: `1`
+* **storageDiskSize:** Premium storage disk size used for the storage services. Default Value: `P30`
+* **storageDisksCount:** Number of storage disks. Default Value: `5`
+* **metaDiskSize:** Premium storage disk size used for the metadata services. Default Value: `P20`
+* **metaDisksCount:** Number of metadata disks. Default Value: `2`
 * **volumeType:** Volume for data disks. Default Value: `RAID0`
 * **vnetRg:** Name of the RG of the virtual network which master server is using.
 * **masterName:** Name of master VM name. Default Value: `beegfsmaster`
