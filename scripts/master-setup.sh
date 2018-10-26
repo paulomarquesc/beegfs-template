@@ -108,7 +108,10 @@ setup_nfs()
 {
 	yum -y install nfs-utils nfs-utils-lib
 
-    echo "$SHARE_HOME    *(rw,async)" >> /etc/exports
+    echo "$SHARE_HOME    *(rw,async,root_squash,anonuid=$HPC_UID,anongid=$HPC_GID,sec=sys)" >> /etc/exports
+
+    chown $HPC_USER:$HPC_GROUP $SHARE_HOME
+
     systemctl enable rpcbind || echo "Already enabled"
     systemctl enable nfs-server || echo "Already enabled"
     systemctl start rpcbind || echo "Already enabled"
