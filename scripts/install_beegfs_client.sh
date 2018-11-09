@@ -329,6 +329,10 @@ server role = standalone server
 guest account = $HPC_USER
 map to guest = Bad Password
 passdb backend = tdbsam
+server max protocol = SMB3
+server min protocol = SMB3
+client min protocol = SMB3
+client max protocol = SMB3
 
 [$BEEGFS_SMB_SHARE_NAME]
 comment = BeeGFS shared file system
