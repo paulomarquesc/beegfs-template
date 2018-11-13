@@ -310,7 +310,8 @@
         "settings": {
           "fileUris": [
             "[concat(parameters('_artifactsLocation'), '/scripts/master-setup.sh', parameters('_artifactsLocationSasToken'))]",
-            "[concat(parameters('_artifactsLocation'), '/scripts/install_beegfs_master.sh',parameters('_artifactsLocationSasToken'))]"
+            "[concat(parameters('_artifactsLocation'), '/scripts/install_beegfs_master.sh',parameters('_artifactsLocationSasToken'))]",
+            "[concat(parameters('_artifactsLocation'), '/scripts/library.sh',parameters('_artifactsLocationSasToken'))]"
           ],
           "commandToExecute": "[concat('bash master-setup.sh ',parameters('adminUsername'),' ', parameters('beegfsShareName'), ' ',  parameters('beegfsHpcUserHomeFolder'), ' ',  parameters('hpcUser'), ' ',  parameters('hpcUid'), ' ',  parameters('hpcGroup'),' ',  parameters('hpcGid'), '; ', variables('beegfsInstall'))]"
         }

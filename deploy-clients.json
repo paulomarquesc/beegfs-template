@@ -454,7 +454,8 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "fileUris": [
-            "[concat(parameters('_artifactsLocation'), '/scripts/install_beegfs_client.sh', parameters('_artifactsLocationSasToken'))]"
+            "[concat(parameters('_artifactsLocation'), '/scripts/install_beegfs_client.sh', parameters('_artifactsLocationSasToken'))]",
+            "[concat(parameters('_artifactsLocation'), '/scripts/library.sh',parameters('_artifactsLocationSasToken'))]"
           ],
           "commandToExecute": "[concat('bash install_beegfs_client.sh ', variables('installParams'))]"
         }

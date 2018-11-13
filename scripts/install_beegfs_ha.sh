@@ -129,7 +129,7 @@ wait_for_all_beegfs_nodes()
 	done
 }
 
-
+# Main
 restart_beegfs-client
 wait_for_all_beegfs_nodes
 setup_ha

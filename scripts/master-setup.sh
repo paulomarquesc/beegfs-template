@@ -36,7 +36,7 @@ if [ -n "$5" ]; then
 	HPC_UID=$5
 fi
 
-HPC_GROUP=hpc
+HPC_GROUP=hpcgroup
 if [ -n "$6" ]; then
 	HPC_GROUP=$6
 fi
@@ -110,7 +110,7 @@ setup_nfs()
 
     echo "$SHARE_HOME    *(rw,async,root_squash,anonuid=$HPC_UID,anongid=$HPC_GID,sec=sys)" >> /etc/exports
 
-    chown $HPC_USER:$HPC_GROUP $SHARE_HOME
+    #chown $HPC_USER:$HPC_GROUP $SHARE_HOME
 
     systemctl enable rpcbind || echo "Already enabled"
     systemctl enable nfs-server || echo "Already enabled"
