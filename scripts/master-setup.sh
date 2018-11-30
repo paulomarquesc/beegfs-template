@@ -61,7 +61,7 @@ setup_user()
 {
     # disable selinux
     sed -i 's/enforcing/disabled/g' /etc/selinux/config
-    setenforce permissive
+    setenforce permissive || true
     
     groupadd -g $HPC_GID $HPC_GROUP
 

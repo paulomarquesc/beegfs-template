@@ -52,7 +52,7 @@ systemctl disable firewalld
 
 # Disable SELinux
 sed -i 's/SELINUX=.*/SELINUX=disabled/g' /etc/selinux/config
-setenforce 0
+setenforce 0 || true
 
 install_pkgs
 setup_domain
