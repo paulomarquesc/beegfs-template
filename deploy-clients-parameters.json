@@ -51,7 +51,7 @@
       "value": "beegfsmaster"
     },
     "sambaWorkgroupName": {
-      "value": "SOFS"
+      "value": "BEEGFS"
     },
     "beeGfsMountPoint":{
       "value":"/beegfs"
