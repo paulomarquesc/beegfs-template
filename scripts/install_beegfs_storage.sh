@@ -118,16 +118,19 @@ EOF
 setup_disks()
 {      
     # Dump the current disk config for debugging
-    fdisk -l
+    #fdisk -l
     
     # Dump the scsi config
-    lsscsi
+    #lsscsi
     
     # Get the root/OS disk so we know which device it uses and can ignore it later
     rootDevice=`mount | grep "on / type" | awk '{print $1}' | sed 's/[0-9]//g'`
     
     # Get the TMP disk so we know which device and can ignore it later
     tmpDevice=`mount | grep "on /mnt/resource type" | awk '{print $1}' | sed 's/[0-9]//g'`
+    if [ -z $tmpDevice]; then
+        tmpDevice=`mount | grep "on /mnt type" | awk '{print $1}' | sed 's/[0-9]//g'`
+    fi
 
     # Get the metadata and storage disk sizes from fdisk, we ignore the disks above
     metadataDiskSize=`fdisk -l | grep '^Disk /dev/' | grep -v $rootDevice | grep -v $tmpDevice | awk '{print $3}' | sort -n -r | tail -1`
