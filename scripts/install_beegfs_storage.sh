@@ -128,7 +128,7 @@ setup_disks()
     
     # Get the TMP disk so we know which device and can ignore it later
     tmpDevice=`mount | grep "on /mnt/resource type" | awk '{print $1}' | sed 's/[0-9]//g'`
-    if [ -z $tmpDevice]; then
+    if [ -z $tmpDevice ]; then
         tmpDevice=`mount | grep "on /mnt type" | awk '{print $1}' | sed 's/[0-9]//g'`
     fi
 
