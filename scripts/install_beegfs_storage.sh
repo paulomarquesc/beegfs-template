@@ -133,8 +133,8 @@ setup_disks()
     fi
 
     # Get the metadata and storage disk sizes from fdisk, we ignore the disks above
-    metadataDiskSize=`fdisk -l | grep '^Disk /dev/' | grep -v $rootDevice | grep -v $tmpDevice | awk '{print $3}' | sort -n -r | tail -1`
-    storageDiskSize=`fdisk -l | grep '^Disk /dev/' | grep -v $rootDevice | grep -v $tmpDevice | awk '{print $3}' | sort -n | tail -1`
+    metadataDiskSize=`fdisk -l | grep '^Disk /dev/' | grep -v $rootDevice | grep -v $tmpDevice | grep -v 'loop' | awk '{print $3}' | sort -n -r | tail -1`
+    storageDiskSize=`fdisk -l | grep '^Disk /dev/' | grep -v $rootDevice | grep -v $tmpDevice | grep -v 'loop' | awk '{print $3}' | sort -n | tail -1`
 
     if [ "$metadataDiskSize" == "$storageDiskSize" ]; then
 	
