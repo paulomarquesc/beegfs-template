@@ -229,7 +229,7 @@
             "nicName": "[concat(parameters('vmNameSuffix'),'-',copyIndex('items',1),'-NIC')]",
             "subnetId": "[variables('subnetId')]",
             "vmSize": "[parameters('VMSize')]",
-            "privateIpAddress": "[concat(parameters('subnetIpAddressSuffix'),'.',add(copyIndex('items',1),parameters('startIpAddress')))]",
+            "privateIpAddress": "[concat(parameters('subnetIpAddressSuffix'),'.',add(copyIndex('items',1),sub(parameters('startIpAddress'),1)))]",
             "availabilitySetId": "[resourceId('Microsoft.Compute/availabilitySets',variables('avSetInfo')[0].availabilitySetName)]",
             "imageInfo": "[variables('computeNodeImages')[parameters('VMImage')]]"
           }

@@ -354,7 +354,7 @@
             "osDiskSizeGB": 128,
             "subnetId": "[variables('subnetId')]",
             "vmSize": "[parameters('VMSize')]",
-            "privateIpAddress": "[concat(parameters('nodeSubnetIpAddressSuffix'),'.',add(copyIndex('items',1),parameters('nodeStartIpAddress')))]",
+            "privateIpAddress": "[concat(parameters('nodeSubnetIpAddressSuffix'),'.',add(copyIndex('items',1),sub(parameters('nodeStartIpAddress'),1)))]",
             "availabilitySetId": "[resourceId('Microsoft.Compute/availabilitySets',variables('avSetInfo')[0].availabilitySetName)]",
             "imageInfo": "[variables('computeNodeImages')[parameters('VMImage')]]"
           }

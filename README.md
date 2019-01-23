@@ -67,7 +67,11 @@ A sample deployment script called Deploy-AzureResourceGroup.sh is provided with 
    *  deploy-beegfs-nodes-parameters.json
    *  deploy-clients-parameters.json
 
-    > Notes: If using **dnsDomainName** make sure you use an existing vnet with DNS already setup before executing this deployment, otherwise beegfs configuration will fail. To use an existing vnet, make sure you configure the resource group name of the existing vnet parameter called **vnetRg** and configure createNewVnet as **False**. It is also mandatory that when using **dnsDomainName** you configure the beegfs master 'A' record on DNS beforehand.
+    > Notes: If using **dnsDomainName** make sure you use an existing vnet with DNS already setup before executing this deployment, otherwise beegfs configuration will fail. To use an existing vnet, make sure you configure the resource group name of the existing vnet parameter called **vnetRg** and configure createNewVnet as **False**. It is also mandatory that when using **dnsDomainName** you configure the beegfs master, beegfs server nodes and smb clients 'A' records on DNS beforehand.
+    
+    > If adding the A records to DNS before deployment time, this is an example of the A records to expect if deploying this template as is: beegfsmaster (192.168.0.4), beegfsserver-1 through 4 (192.168.0.10-192.168.0.13), beegfsclt-1 and 2 (192.168.0.51-192.168.0.52) and finally SMB Load Balancer (192.168.0.55)
+
+    
 
 2. Execute the deployment scripts for each of the templates (make sure you change command line arguments), it must be in this specific order
     * deploy-beegfs-master.json
@@ -94,7 +98,7 @@ A sample deployment script called Deploy-AzureResourceGroup.sh is provided with 
 * **beeGfsMasterVmName:** Management (master) BeeGfs VM name. Default Value: `beegfsmaster`
 * **VMSize:** sku to use for the storage nodes - only premium disks VMs are allowed. Default Value: `Standard_DS4_v2`
 * **VMImage:** VM Image. Default Value: `CentOS_7.5`
-* **vnetCreatNew** Creates a new vnet when True or just use an existing one if False. When using dnsDomainName parameter, it is mandatory that you use an already existing vnet with name resolution already in place with the beegfs master 'A' record configured beforehand. Default value: `True`
+* **vnetCreatNew** Creates a new vnet when True or just use an existing one if False. When using dnsDomainName parameter, it is mandatory that you use an already existing vnet with name resolution already in place with the beegfs master, beegfs server nodes and smb clients 'A' records on DNS beforehand. Default value: `True`
 * **vnetRG:** Resoure group name where the virtual network is located. Defaults to deployment Resource Group. Default Value: `none`
 * **vnetName:** Vnet name. Default Value: `beegfs-vnet`
 * **subnetName:** Subnet name where BeeGFS components will be deployed to. Default Value: `beegfs-subnet`
