@@ -59,7 +59,14 @@
       "metadata": {
         "description": "Resoure group name where the virtual network is located. Defaults to deployment Resource Group."
       }
-    },       
+    },
+    "vnetCreateNew":{
+      "type": "bool",
+      "defaultValue":true,
+      "metadata": {
+        "description": "Creates a new vnet when True or just use an existing one if False. When using dnsDomainName parameter, it is mandatory that you use an already existing vnet with name resolution already in place with the beegfs master 'A' record configured beforehand."
+      }
+    },     
     "vnetName": {
       "type": "string",
       "defaultValue": "beegfs-vnet",
@@ -191,7 +198,7 @@
   },
   "resources": [
     {
-      "condition": true,
+      "condition": "[parameters('vnetCreateNew')]",
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[parameters('vnetName')]",
       "location": "[parameters('location')]",
