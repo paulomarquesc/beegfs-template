@@ -234,11 +234,11 @@ EOF
 setup_user()
 {
 	echo "Setting up user..."
-    if [ ! -e "$SHARE_HOME" ]; then
+    if [ ! -d "$SHARE_HOME" ]; then
         mkdir -p $SHARE_HOME
     fi
 
-    if [ ! -e "$SHARE_SCRATCH" ]; then
+    if [ ! -d "$SHARE_SCRATCH" ]; then
         mkdir -p $SHARE_SCRATCH
     fi
 
